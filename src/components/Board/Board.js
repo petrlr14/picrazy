@@ -2,10 +2,30 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Canvas } from "../Canvas/Canvas";
 import { Controllers } from "../Controllers/Controllers";
+import { Display } from "../Display/Display";
+import { db } from "./../../services/firebase";
 
 const BoardDiv = styled.div`
-  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all ease-in-out 0.3s;
+  & > div {
+    display: flex;
+    flex-direction: column;
+    border: 5px solid #000;
+    border-radius: 13px;
+  }
 `;
+
+const ClockSpan = styled.span`
+  font-size: 5em;
+  font-family: "Indie Flower", cursive;
+`;
+
+const Clock = ({ time }) => {
+  return <ClockSpan>{time}</ClockSpan>;
+};
 
 const colorsArray = [
   { selected: true, color: "#C0392B" },
@@ -23,13 +43,13 @@ const colorsArray = [
   { selected: false, color: "#E67E22" },
   { selected: false, color: "#D35400" },
   { selected: false, color: "#34495E" },
-  { selected: false, color: "#2C3E50" }
+  { selected: false, color: "#2C3E50" },
 ];
 
 const brushesArray = [
   { selected: true, fontClass: "fa-paint-brush", code: "\uf1fc", size: 5 },
-  { selected: false, fontClass: "fa-brush", code: "\uf55d", size: 10 },
-  { selected: false, fontClass: "fa-paint-roller", code: "\uf5aa", size: 15 }
+  { selected: false, fontClass: "fa-brush", code: "\uf55d", size: 15 },
+  { selected: false, fontClass: "fa-paint-roller", code: "\uf5aa", size: 25 },
 ];
 
 export const Board = () => {
@@ -38,25 +58,25 @@ export const Board = () => {
   const [brushes, setBrushes] = useState(brushesArray);
   const [brush, setBrush] = useState(brushesArray[0]);
 
-  const changeColorHanlder = color => {
+  const changeColorHanlder = (color) => {
     setColor(color);
     setColors(
-      colors.map(el => {
+      colors.map((el) => {
         return {
           ...el,
-          selected: color === el.color
+          selected: color === el.color,
         };
       })
     );
   };
 
-  const changeBrushHandler = brush => {
+  const changeBrushHandler = (brush) => {
     setBrush(brush);
     setBrushes(
-      brushes.map(el => {
+      brushes.map((el) => {
         return {
           ...el,
-          selected: brush.code === el.code
+          selected: brush.code === el.code,
         };
       })
     );
@@ -64,15 +84,18 @@ export const Board = () => {
 
   return (
     <BoardDiv>
-      <Canvas color={color} brush={brush} />
-      <Controllers
-        color={color}
-        colors={colors}
-        colorHandler={changeColorHanlder}
-        brush={brush}
-        brushes={brushes}
-        brushHandler={changeBrushHandler}
-      />
+      <div>
+        <Display />
+        <Canvas color={color} brush={brush} />
+        <Controllers
+          color={color}
+          colors={colors}
+          colorHandler={changeColorHanlder}
+          brush={brush}
+          brushes={brushes}
+          brushHandler={changeBrushHandler}
+        />
+      </div>
     </BoardDiv>
   );
 };

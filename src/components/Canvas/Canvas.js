@@ -1,11 +1,14 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { canvas } from "./Canvas.module.css";
+import { db } from "../../services/firebase";
 
 export const Canvas = ({ color, brush }) => {
+  const [canRecive, setCanRecive] = useState(true);
   const canvasRef = useRef(null);
 
   let isPainting = false;
   let prevPos = { offsetX: 0, offsetY: 0 };
+  let currentDraw = [];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -13,7 +16,25 @@ export const Canvas = ({ color, brush }) => {
     ctx.lineJoin = "round";
     ctx.lineCap = "round";
     ctx.lineWidth = brush.size;
+
+    const room = db.ref("/room/1/data");
+    room.on("value", (snapshot) => {
+      const lines = snapshot.val();
+      if (canRecive) {
+        lines.forEach((position) => {
+          paint(position.stop, position.start);
+        });
+      }
+    });
+
+    return () => {
+      room.off();
+    };
   });
+
+  const saveChanges = (draw) => {
+    db.ref("/room/1/data/").set(draw);
+  };
 
   const onMouseDown = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
@@ -21,11 +42,11 @@ export const Canvas = ({ color, brush }) => {
     prevPos = { offsetX, offsetY };
   };
 
-  const paint = currPos => {
+  const paint = (currPos, prevPosition = prevPos) => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const { offsetX, offsetY } = currPos;
-    const { offsetX: x, offsetY: y } = prevPos;
+    const { offsetX: x, offsetY: y } = prevPosition;
     ctx.strokeStyle = color;
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -40,10 +61,12 @@ export const Canvas = ({ color, brush }) => {
       const offSetData = { offsetX, offsetY };
       const positionData = {
         start: { ...prevPos },
-        stop: { ...offSetData }
+        stop: { ...offSetData },
       };
-      //setLine(line.concat(positionData));
+      currentDraw = currentDraw.concat(positionData);
       paint(offSetData);
+      saveChanges(currentDraw);
+      currentDraw = [];
     }
   };
 
@@ -76,8 +99,13 @@ export const Canvas = ({ color, brush }) => {
     }
   };
 
+  const saveData = () => {};
+
   return (
     <>
+      <button onClick={() => setCanRecive(!canRecive)}>
+        {canRecive ? "Can Recive" : "Cannot recive"}
+      </button>
       <canvas
         ref={canvasRef}
         className={canvas}
