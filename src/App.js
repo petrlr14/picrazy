@@ -27,6 +27,11 @@ function App() {
         }
         setLoading(false);
       });
+    } else {
+      setTimeout(() => {
+        setComp(<PublicLobby />);
+        setLoading(false);
+      }, 2000);
     }
   }, [params]);
   useEffect(cb, []);

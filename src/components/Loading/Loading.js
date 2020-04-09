@@ -11,7 +11,6 @@ const defaultOptions = {
 };
 
 const LoadingDiv = styled.div`
-  font-family: "Indie Flower", cursive;
   background-color: ${Colors.primary};
   width: 100vw;
   height: 100vh;

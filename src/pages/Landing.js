@@ -17,7 +17,7 @@ const LandingDiv = styled.div`
 export const Landing = () => {
   return (
     <LandingDiv>
-      <img src="logo_trans.png" alt="picrazy" />
+      <img src="logo_trans.png" alt="picrazy" alt="generated avatar" />
     </LandingDiv>
   );
 };

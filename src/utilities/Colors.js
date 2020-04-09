@@ -3,4 +3,5 @@ export default {
   accent1: "#EBEAED",
   accent2: "#245372",
   accent3: "#1D1827",
+  white: "#FFFAFA",
 };
