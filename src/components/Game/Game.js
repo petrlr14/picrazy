@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Board } from "../Board/Board";
-
 
 const Main = styled.main`
   display: grid;
@@ -9,7 +8,6 @@ const Main = styled.main`
   width: 100vw;
   height: 100vh;
 `;
-
 
 export const Game = () => {
   return (

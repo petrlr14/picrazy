@@ -4,7 +4,7 @@ import { selectedItem } from "./Palette.module.css";
 
 const Item = styled.i`
   font-size: 20px;
-  color: ${props => props.color};
+  color: ${(props) => props.color};
   transition: all ease-in-out 0.2s;
   &:hover {
     font-size: 30px;
@@ -34,9 +34,8 @@ export const Controllers = ({
   colorHandler,
   brushes,
   brush,
-  brushHandler
+  brushHandler,
 }) => {
-  console.log(brush);
   return (
     <Holder>
       <div style={{ display: "inline" }}>
@@ -56,7 +55,7 @@ export const Controllers = ({
         })}
       </div>
       <div style={{ display: "inline" }}>
-        {brushes.map(el => {
+        {brushes.map((el) => {
           return (
             <Item
               onClick={() => {
